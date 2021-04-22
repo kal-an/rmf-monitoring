@@ -4,7 +4,7 @@ import os
 class BaseConfig:
     HTTP_HEADER = os.environ.get('HTTP_HEADER')
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'db4mDMW9%202s'
-    LDAP_URI = 'ldap://svrw.oao.rzd:3268'
+    LDAP_URI = 'ldap://domain:3268'
     SQLALCHEMY_PREFIX = {'prefix': 'sqlalchemy.'}
     JOBSTORES = {
         'default': 'scheduled_jobs',
