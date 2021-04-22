@@ -1,0 +1,275 @@
+{% extends "index.html" %}
+{% block title %}Конфигурация хранилища{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/storage_config.js') }}"></script>
+{% endblock %}
+{% block content %}
+<button type="button" class="btn btn-primary m-1" data-toggle="modal" data-target="#EditorMetricModal">
+    Настроить хранение метрик
+</button>
+
+<button type="button" class="btn btn-primary m-1" data-toggle="modal" data-target="#EditorSummModal">
+    Настроить cуммирование
+</button>
+
+<button type="button" class="btn btn-primary m-1" data-toggle="modal" data-target="#EditorLogsModal">
+    Настроить хранение логов
+</button>
+
+<div class="modal fade m-1" id="EditorSummModal" tabindex="-1" role="dialog" aria-labelledby="summModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="summModalLabel">Настройка суммирования</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="summarization" class="modal-body">
+                <div class="container-fluid">
+                    
+                    <select id="summ" class="custom-select mb-3">
+                        {% for m in metrics %}
+                        <option value="{{m[0]}}">{{m[1]}}</option>
+                        {% endfor %}
+                    </select>
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="inlineCheckboxHour">Суммирование</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="inlineCheckboxHour" value="hour">
+                            <label class="form-check-label" for="inlineCheckboxHour">Час</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="inlineCheckboxDay" value="day">
+                            <label class="form-check-label" for="inlineCheckboxDay">День</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="inlineCheckboxWeek" value="week">
+                            <label class="form-check-label" for="inlineCheckboxWeek">Неделя</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="inlineCheckboxMonth" value="month">
+                            <label class="form-check-label" for="inlineCheckboxMonth">Месяц</label>
+                        </div>
+                    </div>
+
+                    <div class="input-group mb-1">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="start-time">Запуск задания в</label>
+                        </div>
+                        <select id="start-time" class="custom-select">
+                            {% for time in lst | timerange %}
+                            <option value="{{ time }}">{{ time }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="closeSumm" class="btn btn-danger" data-dismiss="modal">Отменить</button>
+                <button type="button" id="addSumm" class="btn btn-success" disabled>Добавить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade m-1" id="EditorMetricModal" tabindex="-1" role="dialog" aria-labelledby="metricModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="metricModalLabel">Настройка метрик</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="metrics" class="modal-body">
+                <div class="container-fluid">
+                    <select id="metric" class="custom-select mb-3">
+                        {% for m in metrics %}
+                        <option value="{{m[0]}}">{{m[1]}}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="form-check input-group mb-1">
+                        <div class="input-group-prepend">
+                            <input class="form-check-input" type="checkbox" value="detail" id="detail">
+                            <label class="input-group-text" for="unit1">Подробные данные</label>
+                        </div>
+                        <select class="custom-select" disabled>
+                            {% for i in range(1, 31) %}
+                            <option value="{{i}}">{{i}}</option>
+                            {% endfor %}
+                        </select>
+                        <select id="unit1" class="custom-select" disabled>
+                            <option value="day">день</option>
+                            <option value="week">неделя</option>
+                            <option value="month">месяц</option>
+                            <option value="year">год</option>
+                        </select>
+                    </div>
+                    <div class="form-check input-group mb-1">
+                        <div class="input-group-prepend">
+                            <input class="form-check-input" type="checkbox" value="hour" id="hour">
+                            <label class="input-group-text" for="unit2">По часам</label>
+                        </div>
+                        <select class="custom-select" disabled>
+                            {% for i in range(1, 31) %}
+                            <option value="{{i}}">{{i}}</option>
+                            {% endfor %}
+                        </select>
+                        <select id="unit2" class="custom-select" disabled>
+                            <option value="day">день</option>
+                            <option value="week">неделя</option>
+                            <option value="month">месяц</option>
+                            <option value="year">год</option>
+                        </select>
+                    </div>
+                    <div class="form-check input-group mb-1">
+                        <div class="input-group-prepend">
+                            <input class="form-check-input" type="checkbox" value="day" id="day">
+                            <label class="input-group-text" for="unit3">По дням</label>
+                        </div>
+                        <select class="custom-select" disabled>
+                            {% for i in range(1, 31) %}
+                            <option value="{{i}}">{{i}}</option>
+                            {% endfor %}
+                        </select>
+                        <select id="unit3" class="custom-select" disabled>
+                            <option value="day">день</option>
+                            <option value="week">неделя</option>
+                            <option value="month">месяц</option>
+                            <option value="year">год</option>
+                        </select>
+                    </div>
+                   <div class="form-check input-group mb-1">
+                        <div class="input-group-prepend">
+                            <input class="form-check-input" type="checkbox" value="week" id="week">
+                            <label class="input-group-text" for="unit4">По неделям</label>
+                        </div>
+                        <select class="custom-select" disabled>
+                            {% for i in range(1, 31) %}
+                            <option value="{{i}}">{{i}}</option>
+                            {% endfor %}
+                        </select>
+                        <select id="unit4" class="custom-select" disabled>
+                            <option value="day">день</option>
+                            <option value="week">неделя</option>
+                            <option value="month">месяц</option>
+                            <option value="year">год</option>
+                        </select>
+                    </div>
+                    <div class="form-check input-group mb-1">
+                        <div class="input-group-prepend">
+                            <input class="form-check-input" type="checkbox" value="month" id="month">
+                            <label class="input-group-text" for="unit5">По месяцам</label>
+                        </div>
+                        <select class="custom-select" disabled>
+                            {% for i in range(1, 31) %}
+                            <option value="{{i}}">{{i}}</option>
+                            {% endfor %}
+                        </select>
+                        <select id="unit5" class="custom-select" disabled>
+                            <option value="day">день</option>
+                            <option value="week">неделя</option>
+                            <option value="month">месяц</option>
+                            <option value="year">год</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group mb-1">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="start-time">Запуск задания в</label>
+                        </div>
+                        <select id="start-time" class="custom-select">
+                            {% for time in lst | timerange %}
+                            <option value="{{ time }}">{{ time }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="closeMetrics" class="btn btn-danger" data-dismiss="modal">Отменить</button>
+                <button type="button" id="addMetrics" class="btn btn-success" disabled>Добавить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade m-1" id="EditorLogsModal" tabindex="-1" role="dialog" aria-labelledby="logsModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="logsModalLabel">Настройка логов</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="logs" class="modal-body">
+                <div class="container-fluid">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="value">Хранение</label>
+                        </div>
+                        <select id="value" class="custom-select">
+                            {% for i in range(1, 31) %}
+                            <option value="{{i}}">{{i}}</option>
+                            {% endfor %}
+                        </select>
+                        <select id="unit" class="custom-select">
+                            <option value="hour">час</option>
+                            <option value="day">день</option>
+                            <option value="week">неделя</option>
+                        </select>
+                    </div>
+                    <div class="input-group mb-1">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="start-time">Запуск задания в</label>
+                        </div>
+                        <select id="start-time" class="custom-select">
+                            {% for time in lst | timerange %}
+                            <option value="{{ time }}">{{ time }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="closeLogs" class="btn btn-danger" data-dismiss="modal">Отменить</button>
+                <button type="button" id="addLogs" class="btn btn-success">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card m-1">
+    <table class="table table-sm table-bordered table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Название</th>
+            <th scope="col">Описание</th>
+            <th scope="col">Следующий старт</th>
+            <th scope="col">Действие</th>
+            </td>
+        </tr>
+        </thead>
+        <tbody id="table-storage-config">
+        {% for id, values in jobs.items() %}
+        <tr value="{{id}}">
+            <td>{{values.get('title', '')}}</td>
+            <td>{{values.get('description', '')|translate}}</td> 
+            <td>{{values.get('next_run', '')}}</td>
+            <td>
+                <button type="button" id="remove" class="btn btn-danger">Удалить</button>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

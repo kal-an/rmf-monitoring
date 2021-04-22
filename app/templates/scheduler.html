@@ -1,0 +1,102 @@
+{% extends "index.html" %}
+{% block title %}Планировщик{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/scheduler.js') }}"></script>
+{% endblock %}
+{% block content %}
+<form>
+    <button type="button" class="btn btn-primary m-1" data-toggle="modal" data-target="#exampleModal">
+        Добавить задания
+    </button>
+
+    <div class="modal fade m-1" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Добавление новых заданий</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="adding" class="modal-body">
+                    <div class="container-fluid">
+
+                        <div class="row mb-1">
+                            <select name="hosts" class="custom-select" required>
+                                <option value="-" selected>Выбрать</option>
+                                {% for i in hosts['hosts'] %}
+                                <option value="{{i}}">{{i}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="row mb-1" style="display: none;">
+
+                            <div class="col-4">
+                                <select name="resource" class="custom-select">
+                                    <option value="-">Выбрать</option>
+                                </select>
+                            </div>
+
+                            <div class="col-6">
+                                <select name="metric-list" class="custom-select">
+                                </select>
+                            </div>
+
+                            <div class="col-2">
+                                <select name="interval" class="custom-select" required>
+                                    <option value="-" selected>мин.</option>
+                                    <option value="5">5 мин</option>
+                                    <option value="10">10 мин</option>
+                                    <option value="15">15 мин</option>
+                                    <option value="30">30 мин</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div id="preloader">
+                        <img id="img-preloader" src="/static/image/circle-preloader.gif" alt="">
+                    </div>
+                    <button type="button" id="close" class="btn btn-danger" data-dismiss="modal">Отменить</button>
+                    <button type="button" id="save" class="btn btn-success">Добавить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<div class="card">
+    <table class="table table-sm table-bordered table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Хост</th>
+            <th scope="col">Название ресурса</th>
+            <th scope="col">Описание метрики</th>
+            <th scope="col">Метрика</th>
+            <th scope="col">Интервал (в мин.)</th>
+            <th scope="col">Следующий старт</th>
+            <th scope="col">Действие</th>
+            </td>
+        </tr>
+        </thead>
+        <tbody id="table-scheduler">
+        {% for id, values in entries.items() %}
+        <tr value="{{id}}">
+            <td>{{values.get('host', '')[:4]}}</td>
+            <td>{{values.get('resource_name', '')}}</td>
+            <td>{{values.get('metric_description', '')}}</td>
+            <td>{{values.get('metric_id', '')}}</td>
+            <td>{{values.get('interval', '')}}</td>
+            <td>{{values.get('next_run', '')}}</td>
+            <td>
+                <button type="button" id="remove" class="btn btn-danger">Удалить</button>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

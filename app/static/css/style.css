@@ -1,0 +1,61 @@
+#left-column {
+float: left;
+width: 250px;
+}
+#center-column {
+margin: 10px 200px;
+}
+
+#right-column {
+float: right;
+width: 5px;
+}
+
+.datepicker {
+    font-size: 0.875em
+}
+
+.datepicker td, .datepicker th {
+    width: 1.5em;
+    height: 1.5em;
+}
+
+.form-login {
+    padding-top: 200px;
+    margin: auto;
+}
+
+#preloader {
+    display: none;
+    float: right;
+}
+
+#img-preloader {
+    height: 33px;
+}
+
+#delTemplate, #addTemplate, #compare {
+    width: 120px;
+}
+
+#username {
+    margin-right: 20px;
+}
+
+.message-error {
+    margin: 200px;
+}
+
+#search {
+    margin-right: 30px;
+    width: 200px;
+    display: none;
+}
+
+#searchElement {
+    display: none;
+}
+
+.chart-container {
+    width: 75%;
+}

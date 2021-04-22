@@ -1,0 +1,65 @@
+{% extends "index.html" %}
+{% block title %}Редактор хостов{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/host-editor.js') }}"></script>
+{% endblock %}
+{% block content %}
+<button type="button" class="btn btn-primary m-1" data-toggle="modal" data-target="#hostEditorModal">
+    Добавить хост
+</button>
+
+<div class="modal fade m-1" id="hostEditorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Добавление нового хоста</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="adding" class="modal-body">
+                <div class="container-fluid">
+                    <div class="row mb-1">
+                        <div class="col-6">
+                            <input class="form-control" id="host" placeholder="хост" required>
+                        </div>
+                        <div class="col-4">
+                            <button type="button" id="check" class="btn btn-info">Проверить</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div id="preloader">
+                    <img id="img-preloader" src="/static/image/circle-preloader.gif" alt="">
+                </div>
+                <button type="button" id="close" class="btn btn-danger" data-dismiss="modal">Отменить</button>
+                <button type="button" id="save" class="btn btn-success" disabled>Добавить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <table class="table table-sm table-bordered table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Хост</th>
+            <th scope="col">Действие</th>
+            </td>
+        </tr>
+        </thead>
+        <tbody id="table-host-editor">
+        {% for i in hosts['hosts'] %}
+        <tr value="{{i}}">
+            <td>{{i}}</td>
+            <td>
+                <button type="button" id="remove" class="btn btn-danger">Удалить</button>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

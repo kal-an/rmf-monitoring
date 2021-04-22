@@ -1,0 +1,27 @@
+{% extends "index.html" %}
+{% block title %}Лог пользователей{% endblock %}
+{% block content %}
+
+<div class="card m-1">
+
+    <table class="table table-sm table-bordered">
+        <thead>
+        <tr>
+            <th scope="col">Время</th>
+            <th scope="col">Логин</th>
+            <th scope="col">Текст</th>
+            </td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for time, login, text in logs %}
+        <tr>
+            <td>{{time}}</td>
+            <td>{{login}}</td>
+            <td>{{text}}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

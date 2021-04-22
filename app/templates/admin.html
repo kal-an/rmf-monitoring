@@ -1,0 +1,94 @@
+{% extends "index.html" %}
+{% block title %}Пользователи{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}
+{% block content %}
+<button type="button" class="btn btn-primary m-1" data-toggle="modal" data-target="#adminModal">
+    Добавить пользователя
+</button>
+
+<div class="modal fade m-1" id="adminModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Добавление нового пользователя</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="adding" class="modal-body">
+                <div class="container-fluid">
+                    <div class="row mb-1">
+                        <div class="input-group mb-1">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="dn">Доменное имя</label>
+                            </div>
+                            <input class="form-control" id="dn" required>
+                        </div>
+
+                        <div class="input-group mb-1">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="login">Логин</label>
+                            </div>
+                            <input class="form-control" id="login" required>
+                        </div>
+
+                        <div class="input-group mb-1">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="full-name">ФИО</label>
+                            </div>
+                            <input class="form-control" id="full-name" required>
+                        </div>
+
+                        <div class="input-group mb-1">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="role">Роль</label>
+                            </div>
+                            <select id="role" class="custom-select">
+                                {% for id, role in roles.items() %}
+                                <option value="{{ id }}">{{ role }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div id="preloader">
+                    <img id="img-preloader" src="/static/image/circle-preloader.gif" alt="">
+                </div>
+                <button type="button" id="close" class="btn btn-danger" data-dismiss="modal">Отменить</button>
+                <button type="button" id="save" class="btn btn-success" disabled>Добавить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <table class="table table-sm table-bordered table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Логин</th>
+            <th scope="col">Доменное имя</th>
+            <th scope="col">ФИО</th>
+            <th scope="col">Действие</th>
+            </td>
+        </tr>
+        </thead>
+        <tbody id="table-admin">
+        {% for id, user in entries.items() %}
+        <tr value="{{id}}">
+            <td>{{user.get('login', '')}}</td>
+            <td>{{user.get('dn', '')}}</td>
+            <td>{{user.get('full_name', '')}}</td>
+            <td>
+                <button type="button" id="remove" class="btn btn-danger">Удалить</button>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

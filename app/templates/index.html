@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <script src="{{ url_for('static', filename='js/jquery-latest.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" type="text/css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" type="text/css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='favicon.png') }}" rel="shortcut icon">
+    {% block scripts %}{% endblock %}
+</head>
+<body>
+
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <span class="navbar-brand mb-0 h1">RMF Monitoring</span>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="/reports">Отчеты</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/designer">Дизайнер</a>
+            </li>
+            {% if current_user.role.name in ['admin', 'su'] %}
+            <li class="nav-item active">
+                <a class="nav-link" href="/scheduler">Планировщик</a>
+            </li>
+            <li class="nav-item active nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Прочее</a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/host_editor">Редактор хостов</a>
+                    <a class="dropdown-item" href="/log_error">Просмотр ошибок</a>
+                    <a class="dropdown-item" href="/storage_config">Конфигурация хранилища</a>
+                    {% if current_user.role.name == 'su' %}
+                    <a class="dropdown-item" href="/admin">Пользователи</a>
+                    <a class="dropdown-item" href="/log_user">Лог пользователей</a>
+                    {% endif %}
+                </div>
+            </li>
+            {% endif %}
+        </ul>
+        <input class="form-control" id="search" type="text" placeholder="поиск">
+        <span id="username" class="badge badge-secondary">{{ current_user.login }}</span>
+        <a id="logout" class="btn btn-secondary btn-sm" href="/logout">Выйти</a>
+    </div>
+    
+
+</nav>
+<div id="content">{% block content %}{% endblock %}</div>
+</body>
+</html>

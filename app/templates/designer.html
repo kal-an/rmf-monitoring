@@ -1,0 +1,125 @@
+{% extends "index.html" %}
+{% block title %}Отчеты{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/designer.js') }}"></script>
+<script src="{{ url_for('static', filename='js/Chart.bundle.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap-datepicker.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap-datepicker.ru.min.js') }}"></script>
+<link href="{{ url_for('static', filename='css/bootstrap-datepicker.min.css') }}" type="text/css" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/Chart.min.css') }}" type="text/css" rel="stylesheet">
+{% endblock %}
+{% block content %}
+
+<div class="modal fade m-1" id="EditorTemplateModal" tabindex="-1" role="dialog" aria-labelledby="templateModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="templateModalLabel">Сохранение отчета</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="logs" class="modal-body">
+                <div class="container-fluid">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <label class="input-group-text" for="desc">Название шаблона</label>
+                        </div>
+                        <input id="desc" type="text" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="close" class="btn btn-danger" data-dismiss="modal">Отменить</button>
+                <button type="button" id="saveTemplate" class="btn btn-success">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div id="left-column" class="card">
+        <div class="card-body">
+            <div id="params">
+
+                <div id="rtypes">
+                    <h6 class="card-title">Типы ресурсов</h6>
+                    <select name="rtype" class="custom-select mb-1">
+                        <option value="-">Выбрать</option>
+                        {% for restype in restypes %}
+                        <option value={{restype}}>{{restype}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div id="rnames" style="display: none;">
+                    <h6 class="card-title">Ресурсы</h6>
+                    <select name="rname" class="custom-select mb-1">
+                        <option value="-">Выбрать</option>
+                    </select>
+                </div>
+
+                <div id="metrics" style="display: none;">
+                    <h6 class="card-title">Метрики</h6>
+                    <select name="metric" id="metric" class="custom-select mb-1">
+                        <option value="-">Выбрать</option>
+                    </select>
+                </div>
+            </div>
+            <input class="form-control" id="searchElement" type="text" placeholder="поиск">
+            <div class="card border-light mb-1" style="display: none;">
+                <select id="template-elements" multiple class="templates custom-select custom-select-sm" size="6">
+                </select>
+            </div>
+            <h6 class="card-title">Интервал</h6>
+            <div class="input-group date mb-1">
+                <select id="unit-value" class="custom-select">
+                    {% for i in range(1, 73) %}
+                    <option value="{{i}}">{{i}}</option>
+                    {% endfor %}
+                </select>
+                <select id="unit" class="custom-select">
+                    <option value="hours">час</option>
+                    <option value="days">день</option>
+                    <option value="weeks">неделя</option>
+                    <option value="months">месяц</option>
+                    <option value="years">год</option>
+                </select>
+            </div>
+            <div class="input-group mb-1">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="datepicker">Дата</label>
+                </div>
+                <input id="datepicker" data-date-format="dd/mm/yyyy" class="form-control">
+            </div>
+            <div class="input-group mb-1">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="start-time">Время</label>
+                </div>
+                <select id="start-time" class="custom-select">
+                    {% for time in lst | timerange %}
+                    <option value="{{ time }}">{{ time }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-1">
+                <button id="submit" class="btn btn-info btn-sm" disabled>Показать</button>
+                <button id="xls" class="btn btn-info btn-sm" disabled>XLS</button>
+                <div id="preloader">
+                    <img id="img-preloader" src="/static/image/circle-preloader.gif" alt="">
+                </div>
+            </div>
+            {% if current_user.role.name in ['admin', 'su'] %}
+            <button id="addTemplate" class="btn btn-success btn-sm" data-toggle="modal"
+                    data-target="#EditorTemplateModal" disabled>Сохранить отчет
+            </button>
+            {% endif %}
+        </div>
+    </div>
+
+    <div id="center-column" class="card chart-container">
+        <canvas id="pChart"></canvas>
+    </div>
+</div>
+{% endblock %}

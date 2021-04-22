@@ -1,0 +1,76 @@
+{% extends "index.html" %}
+{% block title %}Отчеты{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/reports.js') }}"></script>
+<script src="{{ url_for('static', filename='js/Chart.bundle.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap-datepicker.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap-datepicker.ru.min.js') }}"></script>
+<link href="{{ url_for('static', filename='css/bootstrap-datepicker.min.css') }}" type="text/css" rel="stylesheet">
+<link href="{{ url_for('static', filename='css/Chart.min.css') }}" type="text/css" rel="stylesheet">
+{% endblock %}
+{% block content %}
+
+<div class="container-fluid">
+    <div class="card" id="left-column">
+        <div class="card-body">
+
+            <h6 class="card-title">Отчеты</h6>
+            <div class="card border-light mb-1">
+                <select id="templates" class="templates custom-select custom-select-sm" size="15">
+                    {% for id, title, desc in templates %}
+                    <option value="{{ id }}" title="{{ title }}">{{ desc }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <h6 class="card-title">Интервал</h6>
+            <div class="input-group date mb-3">
+                <select id="unit-value" class="custom-select">
+                    {% for i in range(1, 73) %}
+                    <option value="{{i}}">{{i}}</option>
+                    {% endfor %}
+                </select>
+                <select id="unit" class="custom-select">
+                    <option value="hours">час</option>
+                    <option value="days">день</option>
+                    <option value="weeks">неделя</option>
+                    <option value="months">месяц</option>
+                    <option value="years">год</option>
+                </select>
+            </div>
+            <div class="input-group mb-1">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="datepicker">Дата</label>
+                </div>
+                <input id="datepicker" data-date-format="dd/mm/yyyy" class="form-control">
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="start-time">Время</label>
+                </div>
+                <select id="start-time" class="custom-select">
+                    {% for time in lst | timerange %}
+                    <option value="{{ time }}">{{ time }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-1">
+                <button id="submit" class="btn btn-info btn-sm" disabled>Показать</button>
+                <button id="xls" class="btn btn-info btn-sm" disabled>XLS</button>
+                <div id="preloader">
+                    <img id="img-preloader" src="/static/image/circle-preloader.gif" alt="">
+                </div>
+            </div>
+            {% if current_user.role.name in ['admin', 'su'] %}
+            <button id="delTemplate" class="btn btn-danger btn-sm mb-1" disabled>Удалить отчет</button>
+            {% endif %}
+            <button id="compare" class="btn btn-success btn-sm" disabled>В сравнении</button>
+            
+        </div>
+    </div>
+
+    <div id="center-column" class="card chart-container">
+        <canvas id="pChart"></canvas>
+    </div>
+
+</div>
+{% endblock %}
